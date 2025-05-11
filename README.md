@@ -1,3 +1,4 @@
+
 # Sitio Web Francely Accesorios
 
 Este es el proyecto del sitio web para Francely Accesorios, desarrollado con Flask y Tailwind CSS.
@@ -66,4 +67,4 @@ Necesitarás dos terminales abiertas en la raíz del proyecto (`francely_accesor
 
 -   Reemplaza `static/images/logo.png` con el logo real de Francely Accesorios.
 -   Actualiza los enlaces de redes sociales en `app.py` en el diccionario `brand_info`.
--   Para producción, ejecuta `npm run build` para minificar el CSS y considera un servidor WSGI como Gunicorn.
+-   Para producción, ejecuta `npm run build` para minificar el CSS y considera un servidor WSGI como Gunicorn
