@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Información - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-12 md:py-20 max-w-3xl">
+    <header class="text-center mb-12">
+        <img src="{{ url_for('static', filename='images/logo-Francelly-Accesorios.png') }}" alt="Logo {{ brand.name }}" class="mx-auto mb-6 w-40 h-auto">
+        <h1 class="text-4xl md:text-5xl font-serif text-brand-dark-2 mb-2">{{ brand.name }}</h1>
+        <p class="text-lg text-brand-text-light">Joyería Exclusiva Hecha a Mano</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="text-2xl font-serif text-brand-dark-1 mb-6 text-center border-b-2 border-brand-primary pb-2">Conéctate con Nosotros</h2>
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-6 sm:space-y-0 sm:space-x-8 text-center">
+            <a href="{{ brand.social_links.instagram }}" target="_blank" rel="noopener noreferrer"
+               class="group flex flex-col items-center text-brand-dark-2 hover:text-brand-primary transition-colors duration-300">
+                <ion-icon name="logo-instagram" class="text-5xl mb-2"></ion-icon>
+                <span class="text-sm font-medium">Instagram</span>
+            </a>
+            <a href="{{ brand.social_links.whatsapp }}" target="_blank" rel="noopener noreferrer"
+               class="group flex flex-col items-center text-brand-dark-2 hover:text-brand-primary transition-colors duration-300">
+                <ion-icon name="logo-whatsapp" class="text-5xl mb-2"></ion-icon>
+                <span class="text-sm font-medium">Chatea por WhatsApp</span>
+            </a>
+            <a href="{{ brand.social_links.tiktok }}" target="_blank" rel="noopener noreferrer"
+               class="group flex flex-col items-center text-brand-dark-2 hover:text-brand-primary transition-colors duration-300">
+                <ion-icon name="logo-tiktok" class="text-5xl mb-2"></ion-icon>
+                <span class="text-sm font-medium">TikTok</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="bg-brand-white p-8 rounded-lg shadow-lg mb-12">
+        <h2 class="text-2xl font-serif text-brand-dark-1 mb-6 text-center">Nuestra Historia y Misión</h2>
+        <p class="text-brand-text leading-relaxed text-justify mb-4">
+            {{ brand.history }}
+        </p>
+    </section>
+
+    <section class="mb-12 text-center">
+        <h2 class="text-2xl font-serif text-brand-dark-1 mb-4">Visítanos</h2>
+        <div class="text-brand-text leading-relaxed">
+            <p class="flex items-center justify-center mb-2">
+                <ion-icon name="location-outline" class="text-xl text-brand-primary mr-3"></ion-icon>
+                {{ brand.address }}
+            </p>
+            <p class="flex items-center justify-center">
+                <ion-icon name="time-outline" class="text-xl text-brand-primary mr-3"></ion-icon>
+                {{ brand.hours }}
+            </p>
+        </div>
+    </section>
+
+    <section class="text-center bg-brand-primary/30 p-8 rounded-lg">
+        <h2 class="text-2xl font-serif text-brand-dark-2 mb-4">¡Te Esperamos!</h2>
+        <p class="text-lg text-brand-text leading-relaxed">
+            {{ brand.cta }}
+        </p>
+    </section>
+</div>
+{% endblock %}
+
+{% block footer_social_icons %}
+    {% endblock %}

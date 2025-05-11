@@ -1,0 +1,22 @@
+# Entornos virtuales de Python
+venv/
+*.pyc
+__pycache__/
+instance/
+.env
+
+# Archivos de IDE y sistema operativo
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Dependencias de Node.js
+node_modules/
+
+# Archivos CSS generados (siempre se pueden reconstruir desde input.css)
+static/css/style.css
+
+# Archivos de registro y bases de datos temporales (si los usaras)
+*.log
+*.sqlite3
