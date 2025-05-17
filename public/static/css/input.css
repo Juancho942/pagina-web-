@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base adicionales si son necesarios */
+body {
+  @apply font-sans text-brand-text; /* Aplica la fuente sans-serif y el color de texto base por defecto */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-serif; /* Aplica la fuente serif a los encabezados */
+}

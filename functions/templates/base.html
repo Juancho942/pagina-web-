@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ brand.name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Pequeño ajuste para asegurar que el color primario se aplique bien al fondo si es necesario */
+        .bg-brand-primary-fallback { background-color: {{ colors.primary }}; }
+    </style>
+</head>
+<body class="bg-brand-light-gray flex flex-col min-h-screen">
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-brand-primary text-brand-dark-3 p-6 text-center">
+        <div class="container mx-auto">
+            <p class="text-sm">&copy; {{ aktuellen_Datum.year }} {{ brand.name }}. Todos los derechos reservados.</p>
+            <p class="text-xs mt-1">Sitio web: {{ brand.domain }}</p>
+            {% block footer_social_icons %}{% endblock %}
+        </div>
+    </footer>
+
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
