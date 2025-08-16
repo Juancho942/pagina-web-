@@ -1,23 +1,29 @@
 # functions/main.py
-from flask import Flask, render_template # Asegúrate que render_template esté importado
+
+from flask import Flask, render_template
 from datetime import datetime
-from firebase_functions import https_fn # Necesario para Cloud Functions
+from firebase_functions import https_fn
+import firebase_admin
+from firebase_admin import credentials, db
+import os
 
-# Nombre de la instancia de Flask.
-# Flask buscará la carpeta 'templates' en el mismo directorio que este archivo (functions/templates/).
-flask_app = Flask(__name__)
+# --- CONEXIÓN A FIREBASE (VERSIÓN FINAL Y ROBUSTA) ---
+# Se inicializa la app con la URL explícita para asegurar la conexión en la nube.
+if os.environ.get('GCP_PROJECT'):
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app({
+            'databaseURL': 'https://pagina-web-6fb65-default-rtdb.firebaseio.com'
+        })
+# ----------------------------------------------------
 
-# Paleta de colores
-color_palette = {
-    'primary': '#f7bec8',
-    'dark_1': '#c7919e',
-    'dark_2': '#a0606e',
-    'dark_3': '#6e3b46',
-    'white': '#FFFFFF',
-    'light_gray': '#f9fafb'
-}
+# --- RUTA ABSOLUTA A PLANTILLAS ---
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+flask_app = Flask(__name__, template_folder=TEMPLATE_DIR)
+# ----------------------------------
 
-# Información de la marca
+
+# --- El resto del código ---
 brand_info = {
     'name': 'Francely Accesorios',
     'domain': 'www.francelyaccesorios.com',
@@ -31,46 +37,55 @@ brand_info = {
         'tiktok': 'https://www.tiktok.com/@francelyaccesorios'
     }
 }
+color_palette = {
+    'primary': '#f7bec8', 'dark_1': '#c7919e', 'dark_2': '#a0606e',
+    'dark_3': '#6e3b46', 'white': '#FFFFFF', 'light_gray': '#f9fafb'
+}
 
 @flask_app.context_processor
 def inject_global_vars():
-    """ Inyecta variables globales en todas las plantillas """
     return {
         'aktuellen_Datum': datetime.utcnow(),
         'brand': brand_info,
         'colors': color_palette
     }
 
+def get_products_from_db():
+    if not firebase_admin._apps:
+        return {}
+    try:
+        ref = db.reference('/inventario')
+        products = ref.get()
+
+        if not products: return {}
+
+        products_by_category = {}
+        for key, product_data in products.items():
+            # --- LÍNEA MODIFICADA ---
+            # Ahora solo verificamos que el producto tenga una categoría, sin filtrar por stock.
+            if isinstance(product_data, dict) and 'categoria' in product_data:
+            # --------------------------
+                category = product_data['categoria'].strip().upper()
+                if category not in products_by_category:
+                    products_by_category[category] = []
+                products_by_category[category].append(product_data)
+        return products_by_category
+    except Exception as e:
+        print(f"Error al obtener datos de Firebase: {e}")
+        return {}
+
 @flask_app.route('/')
 def index():
-    """
-    Ruta principal que muestra la página "Próximamente" o la página de inicio.
-    """
-    # Si 'index.html' es tu página "Próximamente", está bien.
-    # Si tienes otra página de inicio, cambia el nombre de la plantilla aquí.
-    return render_template('index.html')
+    """ La página principal ES LA TIENDA. """
+    products_by_category = get_products_from_db()
+    return render_template('tienda.html', products_by_category=products_by_category)
 
 @flask_app.route('/informacion')
-@flask_app.route('/QR') # Ambas rutas llevan a la misma página
+@flask_app.route('/QR')
 def informacion():
-    """
-    Ruta para la página de información/QR.
-    """
+    """ Esta ruta es la página de contacto. """
     return render_template('informacion.html')
 
-# Esta es la Cloud Function que Firebase desplegará.
-# El nombre 'mi_aplicacion_flask' debe coincidir con el usado en firebase.json (rewrites).
-@https_fn.on_request(max_instances=1) # Puedes ajustar max_instances según necesites
+@https_fn.on_request(max_instances=1)
 def mi_aplicacion_flask(req: https_fn.Request) -> https_fn.Response:
-    """
-    Punto de entrada para Firebase Functions. Todas las solicitudes HTTP
-    dirigidas a esta función serán manejadas por la aplicación Flask.
-    """
-    # Pasa la solicitud HTTP a tu aplicación Flask.
-    # La biblioteca firebase_functions maneja la adaptación WSGI necesaria.
     return https_fn.Response.from_app(flask_app, req)
-
-# NO INCLUYAS:
-# if __name__ == '__main__':
-# flask_app.run(debug=True)
-# Firebase se encarga de iniciar el servidor.
